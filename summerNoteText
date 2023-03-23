@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Summernote Style Textarea</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
+</head>
+<body>
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-md-12">
+				<h3>Summernote Style Textarea</h3>
+				<textarea id="summernote"></textarea>
+				<button type="submit" onclick="submit()">Submit</button>
+				<button type="submit" onclick="setText()">set</button>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$('#summernote').summernote({
+				placeholder: 'Type your text here',
+				tabsize: 2,
+				height: 300,
+				toolbar: [
+					['style', ['bold', 'italic', 'underline', 'clear']],
+					['view', ['fullscreen', 'codeview', 'help']]
+				]
+			});
+		});
+
+		function submit(){
+			var textValue=$('#summernote').summernote('code');
+			textValue=textValue.replace(/<p>/g, '').replace(/<\/p>/g, '|BR|');
+			textValue=textValue.replace(/<b>/g, '|B|').replace(/<\/b>/g, '|/B|');
+			textValue=textValue.replace(/<i>/g, '|I|').replace(/<\/i>/g, '|/I|');
+			textValue=textValue.replace(/<u>/g, '|U|').replace(/<\/u>/g, '|/U|');
+
+			console.log(textValue);
+
+		}
+
+		function setText(){
+				var markupStr = '|B|恶趣味请问|/B||I|xxxxxxe|/I||B||I||U|委屈问问去|/U||/I||/B||BR||B||I||U|俄文请问|/U||/I|xxxxxx|/B||U|实打实大苏打|/U||BR||B|额外全额委屈为uuuu的反对萨德|/B||BR|';
+				$('#summernote').summernote('code', wrapWithPTags(markupStr));
+
+		}
+		function wrapWithPTags(str) {
+				const arr = str.split('|BR|');
+				const wrappedArr = arr.map((item) => `<p>${item.replace(/\|B\|/g, '<b>').replace(/\|\/B\|/g, '</b>').replace(/\|I\|/g, '<i>').replace(/\|\/I\|/g, '</i>').replace(/\|U\|/g, '<u>').replace(/\|\/U\|/g, '</u>')}</p>`);
+				return wrappedArr.join('');
+		}
+	</script>
+</body>
+</html>
