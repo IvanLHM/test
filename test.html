@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Textarea Input</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+		}
+		h1 {
+			text-align: center;
+			color: #333;
+			margin-top: 50px;
+		}
+		.container {
+			margin: 50px auto;
+			width: 80%;
+			max-width: 1000px;
+			background-color: #fff;
+			padding: 20px;
+			box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+		label {
+			display: block;
+			margin-bottom: 10px;
+			color: #333;
+			font-weight: bold;
+		}
+		textarea {
+			display: block;
+			width: 100%;
+			height: 200px;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			resize: none;
+			font-size: 16px;
+			font-family: Arial, sans-serif;
+			color: #333;
+			margin-top: 20px;
+			box-sizing:border-box;
+			-moz-box-sizing:border-box; /*Firefox*/
+			-webkit-box-sizing:border-box; /*Safari*/
+		}
+		button {
+			display: block;
+			margin-top: 20px;
+			padding: 10px 20px;
+			background-color: #333;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			font-size: 16px;
+			cursor: pointer;
+		}
+		button:hover {
+			background-color: #555;
+		}
+		.tab {
+			overflow: hidden;
+			border: 1px solid #ccc;
+			background-color: #f1f1f1;
+			margin-top: 20px;
+			border-radius: 5px;
+		}
+
+		/* Style the buttons inside the tab */
+		.tab button {
+			background-color: inherit;
+			float: left;
+			border: none;
+			outline: none;
+			cursor: pointer;
+			padding: 14px 16px;
+			transition: 0.3s;
+			font-size: 17px;
+			border-radius: 5px;
+			color: #333;
+		}
+
+		/* Change background color of buttons on hover */
+			.tab button:hover {
+			background-color: #ddd;
+			color: #333;
+		}
+
+		/* Create an active/current tablink class */
+		.tab button.active {
+			background-color: #ccc;
+			color: #333;
+		}
+
+		/* Style the tab content */
+		.tabcontent {
+			display: none;
+			padding: 6px 12px;
+			border: 1px solid #ccc;
+			border-top: none;
+			border-radius: 5px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Textarea Input</h1>
+	<div class="container">
+		<div class="tab" id="myTab">
+			<button class="tablinks active" onclick="openTab(event, 'tab1')">Tab 1</button>
+			<button class="tablinks" onclick="addTab()" id="addTabButton">+</button>
+			<button class="tablinks" onclick="removeTab()" id="removeTabButton">-</button>
+		</div>
+		<div id="tab1" class="tabcontent" style="display:block;">
+			<form>
+				<textarea id="input1" name="input1" placeholder="Enter your text for Tab1..."></textarea>
+				<button type="submit">Submit</button>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		var tabCount = 1;
+		document.getElementsByClassName('tablinks')[0].click();
+		function openTab(evt, tabName) {
+			// Declare all variables
+			var i, tabcontent, tablinks;
+
+			// Get all elements with class="tabcontent" and hide them
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+
+			// Get all elements with class="tablinks" and remove the class "active"
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+			// Show the current tab, and add an "active" class to the button that opened the tab
+			document.getElementById(tabName).style.display = "block";
+			evt.currentTarget.className += " active";
+		}
+
+		function addTab() {
+			if (tabCount < 10) {
+				tabCount++;
+				var newTabButton = document.createElement("button");
+				newTabButton.className = "tablinks";
+				newTabButton.innerHTML = "Tab " + tabCount;
+				newTabButton.onclick = function() { openTab(event, 'tab' + tabCount); };
+				document.getElementById("myTab").insertBefore(newTabButton, document.getElementById("addTabButton"));
+				var newTabContent = document.createElement("div");
+				newTabContent.id = "tab" + tabCount;
+				newTabContent.className = "tabcontent";
+				newTabContent.innerHTML = '<form><textarea id="input' + tabCount + '" name="input' + tabCount + '" placeholder="Enter your text for Tab'+ tabCount + '..."></textarea><button type="submit">Submit</button></form>';
+				document.getElementsByClassName("container")[0].appendChild(newTabContent);
+			}
+		}
+
+		function removeTab() {
+			if (tabCount > 1) {
+				var tabButtonToRemove = document.getElementsByClassName("tablinks")[tabCount - 1];
+				tabButtonToRemove.parentNode.removeChild(tabButtonToRemove);
+				var tabContentToRemove = document.getElementById("tab" + tabCount);
+				tabContentToRemove.parentNode.removeChild(tabContentToRemove);
+				tabCount--;
+			}
+		}
+		document.getElementById("removeTabButton").addEventListener("click", function() {
+			openTab(event, 'tab' + tabCount);
+		});
+	</script>
+</body>
+</html>
