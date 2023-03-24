@@ -29,13 +29,21 @@
 				toolbar: [
 					['style', ['bold', 'italic', 'underline', 'clear']],
 					['view', ['fullscreen', 'codeview', 'help']]
-				]
+				],
+				callbacks: {
+					onPaste: function (e) {
+						var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+						e.preventDefault();
+						document.execCommand('insertText', false, bufferText);
+					}
+				}
 			});
 		});
 
 		function submit(){
 			var textValue=$('#summernote').summernote('code');
 			textValue=textValue.replace(/<p>/g, '').replace(/<\/p>/g, '|BR|');
+			textValue=textValue.replace(/<br>/g, '');
 			textValue=textValue.replace(/<b>/g, '|B|').replace(/<\/b>/g, '|/B|');
 			textValue=textValue.replace(/<i>/g, '|I|').replace(/<\/i>/g, '|/I|');
 			textValue=textValue.replace(/<u>/g, '|U|').replace(/<\/u>/g, '|/U|');
@@ -45,15 +53,25 @@
 		}
 
 		function setText(){
-				var markupStr = '|B|恶趣味请问|/B||I|xxxxxxe|/I||B||I||U|委屈问问去|/U||/I||/B||BR||B||I||U|俄文请问|/U||/I|xxxxxx|/B||U|实打实大苏打|/U||BR||B|额外全额委屈为uuuu的反对萨德|/B||BR|';
+				var markupStr = '|B|测试B变粗体|/B|，|I|测试I变斜体|/I|，|U|测试U加下划线|/U||BR||BR||B||I|测试BI变粗斜体|/I||/B|，|I||U|测试IU变下划线斜体|/U||/I|，|B||I||U|测试BIU变粗斜下划线|/U||/I||/B||BR|普通字，|B||I|测试BI变粗斜体|/I||/B|，普通字，|U|测试U加下划线|/U||BR||BR|普通字结束|BR||BR|';
+				var markupStr2="wwwwdsasdsa"
 				$('#summernote').summernote('code', wrapWithPTags(markupStr));
+				//$('#summernote').summernote('codeview.toggle');
+				//$('#summernote').summernote('disable');
 
 		}
 		function wrapWithPTags(str) {
 				const arr = str.split('|BR|');
-				const wrappedArr = arr.map((item) => `<p>${item.replace(/\|B\|/g, '<b>').replace(/\|\/B\|/g, '</b>').replace(/\|I\|/g, '<i>').replace(/\|\/I\|/g, '</i>').replace(/\|U\|/g, '<u>').replace(/\|\/U\|/g, '</u>')}</p>`);
+				const wrappedArr = arr.map((item) => {
+					if (item === '') {
+						return '<p><br></p>';
+					} else {
+						return `<p>${item.replace(/\|B\|/g, '<b>').replace(/\|\/B\|/g, '</b>').replace(/\|I\|/g, '<i>').replace(/\|\/I\|/g, '</i>').replace(/\|U\|/g, '<u>').replace(/\|\/U\|/g, '</u>')}</p>`;
+    				}
+					
+				});
 				return wrappedArr.join('');
-		}
+			}
 	</script>
 </body>
 </html>
