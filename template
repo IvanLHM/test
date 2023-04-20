@@ -1,0 +1,70 @@
+    @Bean("StringTemplateEngine")
+	public SpringTemplateEngine StringTemplateResolver() {
+        //创建TemplateEngine
+		SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
+		IDialect dialect = new SpringStandardDialect();
+		springTemplateEngine.setDialect(dialect);
+        //创建StringTemplateResolver 
+		StringTemplateResolver resolver = new StringTemplateResolver();
+		resolver.setCacheable(true);
+        //引擎使用StringTemplateResolver
+		springTemplateEngine.setTemplateResolver(resolver);
+		return springTemplateEngine;
+	}
+  
+  
+  
+  
+   
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = AnGBizApplication.class)
+@WebAppConfiguration
+public class MailTest {
+ 
+    @EmailTemplateSubject(1)
+    public String emailSubject;
+ 
+    @Resource
+    private OtherMapper mapper;
+ 
+    @Autowired
+    private EmailHandler emailHandler;
+ 
+    @Test
+    public void test(){
+        Map<String, Object> source = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "fasdf");
+        source.put("caidname", map);
+        source.put("company", "company");
+        source.put("contractnum", "asdfasd");
+        source.put("fawu", "asdfasd");
+        source.put("contracttype", ModuleEnum.COST_CONTRACT.getChineseName());
+        source.put("name", "张三");
+        source.put("sex", "女");
+ 
+        String target = "姓名：${name})]<br/>性别：[(${sex})]";
+        emailHandler.resorverTemplate(target, source);
+        System.out.println("target:::::::::"+target);
+        String s = mapper.selectEmailTemplateById(EmailEnum.CONTRACT_LEGAL_APPROVE.getTemplateId());
+        System.out.println("s:::::::::::::"+s);
+        String content = emailHandler.resorverTemplate(s, source);
+        System.out.println("content:::::::::"+content);
+    }
+}
+
+
+
+
+@Component
+public final class EmailHandler {
+ 
+    @Resource(name = "StringTemplateEngine")
+    private SpringTemplateEngine springTemplateEngine;
+ 
+    public String resorverTemplate(String template, Map<String, Object> source){
+        Context context = new Context();
+        context.setVariables(source);
+        return springTemplateEngine.process(template, context);
+    }
+}
